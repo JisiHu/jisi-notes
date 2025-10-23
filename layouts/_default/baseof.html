@@ -1,0 +1,15 @@
+<!-- layouts/_default/baseof.html -->
+{{ partial "head.html" . }}
+<body>
+    {{ partial "header.html" . }}
+    <main class="main">
+        {{ block "main" . }}{{ end }}
+    </main>
+    {{ partial "footer.html" . }}
+    
+    <!-- 仅在需要渲染公式的页面加载 MathJax -->
+    {{ if or .Params.math .Site.Params.math }}
+        {{ partial "math.html" . }}
+    {{ end }}
+</body>
+</html>
