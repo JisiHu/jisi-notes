@@ -1,6 +1,6 @@
 +++
 date = '2025-10-23T12:43:02+08:00'
-draft = true
+draft = false
 title = 'How_to_post'
 
 +++
@@ -28,4 +28,12 @@ hugo server -D
 ```
 
 
+
+## 写好后，输入这几个指令即可
+
+```powershell
+git add .
+git commit -m "发布新文章"
+git push
+```
 
