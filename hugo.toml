@@ -1,13 +1,13 @@
 baseURL = 'https://jisi-notes.pages.dev' # 本地测试地址，部署时替换为实际域名
 languageCode = 'en-us'
-title = 'My Notes'           # 技术博客标题，可自定义
-theme = 'PaperMod'                # 启用 PaperMod 主题
+title = 'My Notes'                       # 技术博客标题，可自定义
+theme = 'PaperMod'                       # 启用 PaperMod 主题
 
 [params]
 author = 'Jisi Hu'                                                                                                                                        # 你的名字
 description = 'Notes on Math, C++ Programming, and Python Tips'                                                                                           # 博客核心定位
 showReadingTime = true                                                                                                                                    # 显示文章阅读时间
 code = true                                                                                                                                               # 启用代码高亮（对 C++/Python 代码展示至关重要）
-darkMode = 'auto'                                                                                                                                         # 自动切换明暗模式，提升阅读体验
+darkMode = 'auto'
+customCSS = ["css/custom.css"]                                                                                                                            # 自动切换明暗模式，提升阅读体验
 homeInfoParams = { Title = "Hi, I'm [Jisi Hu]", Content = "I share insights on Math, C++ programming, and Python through practical notes and examples." } # 首页个人介绍（可选，可删除）
-#
