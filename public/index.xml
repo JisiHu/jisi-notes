@@ -6,8 +6,61 @@
     <description>Recent content on My Notes</description>
     <generator>Hugo -- 0.151.2</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Oct 2025 12:43:02 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 23 Oct 2025 18:55:29 +0800</lastBuildDate>
     <atom:link href="https://jisi-notes.pages.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>基本不等式练习题</title>
+      <link>https://jisi-notes.pages.dev/posts/%E5%9F%BA%E6%9C%AC%E4%B8%8D%E7%AD%89%E5%BC%8F%E7%BB%83%E4%B9%A0%E9%A2%98/</link>
+      <pubDate>Thu, 23 Oct 2025 18:55:29 +0800</pubDate>
+      <guid>https://jisi-notes.pages.dev/posts/%E5%9F%BA%E6%9C%AC%E4%B8%8D%E7%AD%89%E5%BC%8F%E7%BB%83%E4%B9%A0%E9%A2%98/</guid>
+      <description>&lt;h1 id=&#34;基本不等式&#34;&gt;基本不等式&lt;/h1&gt;
+&lt;h2 id=&#34;若-x--1则函数-fx--9x--frac1x-1-的最小值为&#34;&gt;若 $x &amp;gt; 1$，则函数 $f(x) = 9x + \frac{1}{x-1}$ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;求函数-y2xfrac1x2-x0-的值域&#34;&gt;求函数$ y=2x+\frac{1}{x^{2}} (x&amp;gt;0) $的值域&lt;/h2&gt;
+&lt;h2 id=&#34;已知函数-yaxba1的图象经过点21则-frac16a-b--的最小值为&#34;&gt;已知函数 $y=a^x+b(a&amp;gt;1)$的图象经过点(2,1),则$ \frac{16}{a}-b $ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;若-a0b0则-frac1afracab2b-的最小值为-underlinequadquad&#34;&gt;若 $a&amp;gt;0$，$b&amp;gt;0$，则 $\frac{1}{a}+\frac{a}{b^2}+b$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-a0b0且-ab--1则-frac12afrac12bfrac8a--b-的最小值为-underlinequadquad&#34;&gt;已知 $a&amp;gt;0$，$b&amp;gt;0$，且 $ab = 1$，则 $\frac{1}{2a}+\frac{1}{2b}+\frac{8}{a + b}$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-xy-为正实数则-fracxx--2y--frac2x--yx-的最小值为-underlinequadquad&#34;&gt;已知 $x$，$y$ 为正实数，则 $\frac{x}{x + 2y} + \frac{2x + y}{x}$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;设-a--b--c--0则-2a2--frac1ab--frac1aa---b---12ac--36c2-最小值为-underlinequadquad&#34;&gt;设 $a &amp;gt; b &amp;gt; c &amp;gt; 0$，则 $2a^2 + \frac{1}{ab} + \frac{1}{a(a - b)} - 12ac + 36c^2$ 最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-xya-均为正实数则-fracyx--frac25x3x--y--a2---2a--4-的最小值为-underlinequadquad&#34;&gt;已知 $x$，$y$，$a$ 均为正实数，则 $\frac{y}{x} + \frac{25x}{3x + y} + a^2 - 2a + 4$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-a1b2则-fraca--b2sqrta2---1--sqrtb2---4-的最小值为-underlinequadquad&#34;&gt;已知 $a&amp;gt;1$，$b&amp;gt;2$，则 $\frac{(a + b)^2}{\sqrt{a^2 - 1} + \sqrt{b^2 - 4}}$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知实数-x-geq-y--0z--0则-frac2x--3y--4z2x--y--frac2xy--2z-的最小值为-underlinequadquad&#34;&gt;已知实数 $x \geq y &amp;gt; 0$，$z &amp;gt; 0$，则 $\frac{2x + 3y + 4z}{2x + y} + \frac{2x}{y + 2z}$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-a0b0c0ab2则-fracacb---fracc2--fraccab--fracsqrt5c-2-的最小值为______&#34;&gt;已知 $a&amp;gt;0$，$b&amp;gt;0$，$c&amp;gt;0$，$a+b=2$，则 $\frac{ac}{b} - \frac{c}{2} + \frac{c}{ab} + \frac{\sqrt{5}}{c-2}$ 的最小值为______.&lt;/h2&gt;
+&lt;h1 id=&#34;柯西不等式和权方和不等式&#34;&gt;柯西不等式和权方和不等式&lt;/h1&gt;
+&lt;h2 id=&#34;-x0texty0text--2x5y1text则--frac12xfrac15y-text-的最小值为--&#34;&gt;$\ x&amp;gt;0\text{，}y&amp;gt;0\text{，}  2x+5y=1\text{，则 } \frac{1}{2x}+\frac{1}{5y} \text{ 的最小值为}  $&lt;/h2&gt;
+&lt;h2 id=&#34;已知正实数-xy-满足-x--2-y--2则-frac--1---x----frac--2---y--的最小值为&#34;&gt;已知正实数 $x$、$y$ 满足 $x + 2 y = 2$，则 $\frac { 1 } { x } +  \frac { 2 } { y }$ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知-x0y02x-frac1xfrac8y-y则-2xy-的最小值为&#34;&gt;已知 $x&amp;gt;0$，$y&amp;gt;0$，$2x-\frac{1}{x}=\frac{8}{y}-y$，则 $2x+y$ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知-x0y0-且-frac1xfrac4y1若-xym28m-恒成立则实数-m-的取值范围为&#34;&gt;已知 $x&amp;gt;0$，$y&amp;gt;0$ 且 $\frac{1}{x}+\frac{4}{y}=1$，若 $x+y&amp;gt;m^{2}+8m$ 恒成立，则实数 $m$ 的取值范围为&lt;/h2&gt;
+&lt;h2 id=&#34;已知点-pxy-在椭圆-fracx23--frac2y23--1-上运动则-frac1x2--frac21y2-的最小值是______&#34;&gt;已知点 $P(x,y)$ 在椭圆 $\frac{x^{2}}{3} + \frac{2y^{2}}{3} = 1$ 上运动，则 $\frac{1}{x^{2}} + \frac{2}{1+y^{2}}$ 的最小值是______．&lt;/h2&gt;
+&lt;h2 id=&#34;若正数-ab-满足-ab7则-frac1a1--frac9b1-的最小值是&#34;&gt;若正数 $a$，$b$ 满足 $a+b=7$，则 $\frac{1}{a+1} + \frac{9}{b+1}$ 的最小值是&lt;/h2&gt;
+&lt;h2 id=&#34;若-x0y0且-x4y7则-frac1x1--frac1y-的最小值为______&#34;&gt;若 $x&amp;gt;0$，$y&amp;gt;0$，且 $x+4y=7$，则 $\frac{1}{x+1} + \frac{1}{y}$ 的最小值为______。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-xy-为正数且-x--frac1x--3y--frac3y--10则-x--3y-的最大值为______&#34;&gt;已知 $x$，$y$ 为正数，且 $x + \frac{1}{x} + 3y + \frac{3}{y} = 10$，则 $x + 3y$ 的最大值为______。&lt;/h2&gt;
+&lt;h1 id=&#34;分式不等式的变形&#34;&gt;分式不等式的变形&lt;/h1&gt;
+&lt;h2 id=&#34;已知实数-x-geq-y--0z--0则-frac2x--3y--4z2x--y--frac2xy--2z-的最小值为-underlinequadquad-1&#34;&gt;已知实数 $x \geq y &amp;gt; 0$，$z &amp;gt; 0$，则 $\frac{2x + 3y + 4z}{2x + y} + \frac{2x}{y + 2z}$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知-x-in-4-inftyy-in-0-5z-in-0-1则-frac2x--y--4zx--2z--frac2x--zy-的最小值为-underlinequadquad&#34;&gt;已知 $x \in [4, +\infty)$，$y \in (0, 5]$，$z \in (0, 1]$，则 $\frac{2x + y + 4z}{x + 2z} + \frac{2x + z}{y}$ 的最小值为 $\underline{\quad\quad}$。&lt;/h2&gt;
+&lt;h2 id=&#34;已知正数-abc-满足-a--2bgeq-c则-fracbafraca2b--c的最小值为&#34;&gt;已知正数$ a,b,c$ 满足 $a + 2b\geq c$，则 $\frac{b}{a}+\frac{a}{2b + c}$的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知a0b0c0frac1a--frac1b--c--2则fracaba--b--ab--frac1c的最小值为___&#34;&gt;已知a&amp;gt;0，b&amp;gt;0，c&amp;gt;0，$\frac{1}{a} + \frac{1}{b} + c = 2$，则$\frac{ab}{a + b + ab} + \frac{1}{c}$的最小值为___。&lt;/h2&gt;
+&lt;h2 id=&#34;设-a0-b2-且-ab4-则-frac2a--frac1b-2-的最小值是___&#34;&gt;设 $a&amp;gt;0$, $b&amp;gt;2$ 且 $a+b=4$, 则 $\frac{2}{a} + \frac{1}{b-2}$ 的最小值是___.&lt;/h2&gt;
+&lt;h2 id=&#34;已知实数-xy-满足-xy0且-xy2mfrac3x2yfrac12x-y-的最小值为&#34;&gt;已知实数 $x$，$y$ 满足 $x&amp;gt;y&amp;gt;0$，且 $x+y=2$，$M=\frac{3}{x+2y}+\frac{1}{2x-y}$ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知点-pxy-在圆-x2y22-上运动则-frac11--x2--frac11--y2-的最小值为&#34;&gt;已知点 $P(x,y)$ 在圆 $x^{2}+y^{2}=2$ 上运动，则 $\frac{1}{1 + x^{2}} + \frac{1}{1 + y^{2}}$ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知正数-ab-满足-ab1c-in-mathbbr则-frac3abc2b--frac1abc2ab--3c2-的最小值为&#34;&gt;已知正数 $a$，$b$ 满足 $a+b=1$，$c \in \mathbb{R}$，则 $\frac{3a}{bc^{2}+b} + \frac{1}{abc^{2}+ab} + 3c^{2}$ 的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知-asqrtc2b0则-a2frac4c21basqrtc-2bfracc3c22c22-的最小值是&#34;&gt;已知 $a\sqrt{c}&amp;gt;2b&amp;gt;0$，则 $a^{2}+\frac{4(c^{2}+1)}{b(a\sqrt{c}-2b)}+\frac{c^{3}+c+2}{2c^{2}+2}$ 的最小值是&lt;/h2&gt;
+&lt;h1 id=&#34;齐次化&#34;&gt;齐次化&lt;/h1&gt;
+&lt;h2 id=&#34;若正实数-ab-满足-ab1则-fracb4a--frac1b-的最小值为_______&#34;&gt;若正实数 $a,b$ 满足 $a+b=1$，则 $\frac{b}{4a} + \frac{1}{b}$ 的最小值为_______。&lt;/h2&gt;
+&lt;h2 id=&#34;设-xy-为实数若-4x2y2xy1则-2xy-的最大值为_________&#34;&gt;设 $x$，$y$ 为实数，若 $4x^{2}+y^{2}+xy=1$，则 $2x+y$ 的最大值为_________。&lt;/h2&gt;
+&lt;h2 id=&#34;使得5x12sqrtxyleqslant-axy对所有正实数xy都成立的实数a的最小值为&#34;&gt;使得$5x+12\sqrt{x}y\leqslant a(x+y)$对所有正实数$x,y$都成立的实数$a$的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知ab均为正数且ab-a-2b0则fraca24-frac2ab2-frac1b的最小值为&#34;&gt;已知a，b均为正数，且ab-a-2b=0，则$\frac{a^{2}}{4}-\frac{2}{a}+b^{2}-\frac{1}{b}$的最小值为&lt;/h2&gt;
+&lt;h2 id=&#34;已知1--x24y2-2xyx--0y--0则x--2y的取值范围为___&#34;&gt;已知$1 = x^{2}+4y^{2}-2xy(x &amp;lt; 0,y &amp;lt; 0)$,则$x + 2y$的取值范围为___.&lt;/h2&gt;
+&lt;h2 id=&#34;已知正数-a-b-满足-a--b--1-c-in-r则-frac3abc2bfrac1abc2ab3c2-的最小值为_______&#34;&gt;已知正数 a, b 满足 $a + b = 1$, $c \in R$，则 $\frac{3a}{bc^{2}+b}+\frac{1}{abc^{2}+ab}+3c^{2}$ 的最小值为_______.&lt;/h2&gt;
+&lt;h2 id=&#34;已知3a2b2-6b40则frac3ab26b-4的最大值为&#34;&gt;已知$3a^{2}+b^{2}-6b+4=0$,则$\frac{(3a+b)^{2}}{6b-4}$的最大值为&lt;/h2&gt;
+&lt;h1 id=&#34;整体换元观察出对勾函数&#34;&gt;整体换元观察出对勾函数&lt;/h1&gt;
+&lt;h2 id=&#34;当xin-frac324时不等式ax2bx4aleq-2x恒成立则6ab的最大值是&#34;&gt;当$x\in [\frac{3}{2},4]$时,不等式$|ax^{2}+bx+4a|\leq 2x$恒成立,则6a+b的最大值是.&lt;/h2&gt;
+&lt;h2 id=&#34;若对于任意-xin14不等式-0leq-ax2bx4aleq4x-恒成立aab25-的范围为&#34;&gt;若对于任意 $x\in[1,4]$，不等式 $0\leq ax^{2}+bx+4a\leq4x$ 恒成立，$|a|+|a+b+25|$ 的范围为&lt;/h2&gt;
+&lt;h1 id=&#34;单变量法消元法&#34;&gt;单变量法（消元法）&lt;/h1&gt;
+&lt;h2 id=&#34;若实数-xy-满足-2x2xy-y21则-fracx-2y5x2-2xy2y2-的最大值为______&#34;&gt;若实数 $x$，$y$ 满足 $2x^{2}+xy-y^{2}=1$，则 $\frac{x-2y}{5x^{2}-2xy+2y^{2}}$ 的最大值为______.&lt;/h2&gt;
+&lt;h2 id=&#34;若正实数-ab-满足-frac1a1--frac1b2--frac13则-ab--a--b-的最小值为&#34;&gt;若正实数 $a$，$b$ 满足 $\frac{1}{a+1} + \frac{1}{b+2} = \frac{1}{3}$，则 $ab + a + b$ 的最小值为。&lt;/h2&gt;
+&lt;h1 id=&#34;几何意义相关题&#34;&gt;几何意义相关题&lt;/h1&gt;
+&lt;h2 id=&#34;已知正实数-abcd-满足-a2-ab10c2d21则当-a-c2b-d2-取得最小值时ab___&#34;&gt;已知正实数 $a,b,c,d$ 满足 $a^{2}-ab+1=0$，$c^{2}+d^{2}=1$，则当 $(a-c)^{2}+(b-d)^{2}$ 取得最小值时，$ab=$___.&lt;/h2&gt;</description>
+    </item>
     <item>
       <title>更新博客方法（备忘）</title>
       <link>https://jisi-notes.pages.dev/posts/how_to_post/</link>
