@@ -1,4 +1,4 @@
-baseURL = 'http://localhost:1313' # 本地测试地址，部署时替换为实际域名
+baseURL = 'https://jisi-notes.pages.dev' # 本地测试地址，部署时替换为实际域名
 languageCode = 'en-us'
 title = 'My Tech Notes'           # 技术博客标题，可自定义
 theme = 'PaperMod'                # 启用 PaperMod 主题
