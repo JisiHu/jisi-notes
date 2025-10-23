@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://jisi-notes.pages.dev/posts/how_to_post/</loc>
-    <lastmod>2025-10-23T12:43:02+08:00</lastmod>
-  </url><url>
     <loc>https://jisi-notes.pages.dev/</loc>
     <lastmod>2025-10-23T12:43:02+08:00</lastmod>
   </url><url>
     <loc>https://jisi-notes.pages.dev/posts/</loc>
+    <lastmod>2025-10-23T12:43:02+08:00</lastmod>
+  </url><url>
+    <loc>https://jisi-notes.pages.dev/posts/how_to_post/</loc>
     <lastmod>2025-10-23T12:43:02+08:00</lastmod>
   </url><url>
     <loc>https://jisi-notes.pages.dev/categories/</loc>

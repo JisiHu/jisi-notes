@@ -1,7 +1,7 @@
 +++
 date = '2025-10-23T12:43:02+08:00'
 draft = false
-title = 'How_to_post'
+title = '更新博客方法（备忘）'
 
 +++
 
@@ -27,13 +27,19 @@ hugo new posts/文件名.md
 hugo server -D
 ```
 
+## 先生成生产环境文件（确保 draft: false）
+
+```powershell
+hugo
+```
+
 
 
 ## 写好后，输入这几个指令即可
 
 ```powershell
 git add .
-git commit -m "发布新文章"
+git commit -m "发布新文章" #说明理由就行
 git push
 ```
 
