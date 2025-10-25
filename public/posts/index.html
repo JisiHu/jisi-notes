@@ -134,7 +134,20 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">侧方位停车的动作要领
+    <h2 class="entry-hint-parent">在个人网站上传带图片文章的简便方法（备忘）
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在个人网站上传带图片文章的简便方法（备忘） 1.先把markdown文章放在桌面，里面的图片正确引用 2.在桌面创建文档HugoImageTransfer.ps1 3.把以下代码粘贴在里面 &lt;# Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径 #&gt; # -------------------------- 你需要改的参数（只改这3行！）-------------------------- $originalMdPath = &#34;C:\Users\你的用户名\Desktop\原文章.md&#34; # 你的原Markdown文件路径（比如桌面的“原文章.md”） $hugoPostTitle = &#34;2025-10-25-my-new-post&#34; # 新建的Hugo文章文件名（不用加.md，会自动加） $hugoProjectPath = &#34;D:\personnal_blog\paper-notes&#34; # 你的Hugo项目根目录（之前的paper-notes） # -------------------------------------------------------------------------------- # 1. 新建Hugo文章 $hugoPostPath = Join-Path $hugoProjectPath &#34;content\posts\$hugoPostTitle.md&#34; hugo new &#34;posts\$hugoPostTitle.md&#34; --source $hugoProjectPath | Out-Null Write-Host &#34;✅ 已新建Hugo文章：$hugoPostPath&#34; # 2. 确保static/images文件夹存在 $imageSaveDir = Join-Path $hugoProjectPath &#34;static\images&#34; if (-not (Test-Path $imageSaveDir)) { New-Item -ItemType Directory -Path $imageSaveDir | Out-Null Write-Host &#34;✅ 已创建图片保存目录：$imageSaveDir&#34; } # 3. 读取原Markdown内容 $mdContent = Get-Content -Path $originalMdPath -Raw Write-Host &#34;✅ 已读取原Markdown文件&#34; # 4. 处理Base64图片（剪切板截图常见形式） $base64Pattern = &#39;!\[(.*?)\]\(data:image/(png|jpg|jpeg);base64,(.*?)\)&#39; $mdContent = [regex]::Replace($mdContent, $base64Pattern, { param($match) $imgDesc = $match.Groups[1].Value $imgExt = $match.Groups[2].Value $base64Data = $match.Groups[3].Value # 生成唯一图片名（时间戳&#43;随机数，避免重复） $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34; $imgSavePath = Join-Path $imageSaveDir $imgName # Base64解码并保存为图片文件 $base64Bytes = [Convert]::FromBase64String($base64Data) [IO.File]::WriteAllBytes($imgSavePath, $base64Bytes) Write-Host &#34;✅ 已保存Base64图片：$imgName&#34; # 返回新的引用路径（Hugo绝对路径） return &#34;![$imgDesc](/images/$imgName)&#34; }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 5. 处理本地临时路径图片（如C:\Temp\XXX.png） $localImgPattern = &#39;!\[(.*?)\]\((C:\\Users\\.*?\.(png|jpg|jpeg|gif))\)&#39; $mdContent = [regex]::Replace($mdContent, $localImgPattern, { param($match) $imgDesc = $match.Groups[1].Value $localImgPath = $match.Groups[2].Value $imgExt = $match.Groups[3].Value # 生成唯一图片名 $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34; $imgSavePath = Join-Path $imageSaveDir $imgName # 复制本地图片到static/images Copy-Item -Path $localImgPath -Destination $imgSavePath -Force Write-Host &#34;✅ 已复制本地图片：$imgName&#34; # 返回新的引用路径 return &#34;![$imgDesc](/images/$imgName)&#34; }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容） $frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern &#39;---[\s\S]*?---&#39; | ForEach-Object { $_.Matches.Value } $finalContent = &#34;$frontMatter`n`n$mdContent&#34; Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8 Write-Host &#34;`n🎉 全部完成！Hugo文章路径：$hugoPostPath&#34; 可以看到只用改三行代码
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-10-25 17:47:13 +0800 CST'>October 25, 2025</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Jisi Hu</span></footer>
+  <a class="entry-link" aria-label="post link to 在个人网站上传带图片文章的简便方法（备忘）" href="https://jisi-notes.pages.dev/posts/%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E5%B8%A6%E5%9B%BE%E7%89%87%E6%96%87%E7%AB%A0%E7%9A%84%E7%AE%80%E4%BE%BF%E6%96%B9%E6%B3%95%E5%A4%87%E5%BF%98/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">侧方停车的动作要领
     </h2>
   </header>
   <div class="entry-content">
@@ -143,7 +156,7 @@
 10.右打满后看左侧后视镜 11.看到第二条虚线完全露出，回正 12.等到前门把手（大的门把手）完全进入虚线，左打满 13.车身与两边虚线平行就是正了 14.离合刹车同时踩到底，停住，不要回正方向 15.出去前，先打左转向灯 16.换1档 17.点位是这条直线 18，当它与挡风玻璃右下角重合时，向右打2.5圈 19.车正，回正方向 </p>
   </div>
   <footer class="entry-footer"><span title='2025-10-23 22:02:57 +0800 CST'>October 23, 2025</span>&nbsp;·&nbsp;<span>1 min</span>&nbsp;·&nbsp;<span>Jisi Hu</span></footer>
-  <a class="entry-link" aria-label="post link to 侧方位停车的动作要领" href="https://jisi-notes.pages.dev/posts/%E4%BE%A7%E6%96%B9%E4%BD%8D%E5%81%9C%E8%BD%A6%E7%9A%84%E5%8A%A8%E4%BD%9C%E8%A6%81%E9%A2%86/"></a>
+  <a class="entry-link" aria-label="post link to 侧方停车的动作要领" href="https://jisi-notes.pages.dev/posts/%E4%BE%A7%E6%96%B9%E5%81%9C%E8%BD%A6%E7%9A%84%E5%8A%A8%E4%BD%9C%E8%A6%81%E9%A2%86/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -154,7 +167,7 @@
   <div class="entry-content">
     <p>倒车入库的动作要领 1.一共有四个库，避雷1,4号库，选中间的那两个 2.用方向盘正中心，找好路中往前走！ 3.确认右侧距离 4.在引擎盖覆盖这根线时，向右打一圈，准备进库 5.当方向盘对准库角时，回正方向 6.往前开，当车头三分之一或车头中间碰到这个库角马路牙子时，向左打一圈 7.方向盘找从左往右第三条虚线正中心或靠右一点位置，往前开，把左侧距离让到1.5m到1.8m左右 8.当车头盖住虚线的时候，看向左侧车窗，看到这条虚线到车窗中间时（可以稍微多点，但是不能少了，车的前车轮必须过线），停，挂倒挡，计时开始，全过程显示三分半。 9.先看左侧后视镜 10.当后视镜下沿与虚线在视野中（不可探头）距离两指左右时，向右打满 11.此时看右侧后视镜，往后倒，看车尾的横切面，挡住第三条虚线，最好别完全挡住，留个小角尖，也就是这个角离我们车身距离30cm左右，此时，回正方向。 12.当这个角快要挨到后视镜下边缘时，向右打满 13.此时看左后视镜，看到车库的右后角完全露出后，回正 13.回正后看两边，哪边要变宽方向盘往哪边”立“起来，眼睛往窄的地方看，看是否平行 14.一平行方向盘马上拉平 15.看右后视镜，看到库的右后角距离后视镜下沿半指到一指左右距离时，停车。 16.挂1档，准备出去 17.车头左前角一碰到黄线，立刻左打满 18.车正时回正 19.看到虚线在左车窗时，停车，挂倒挡 20.虚线距离后视镜下沿两指时，左打满 21.当看到第三条虚线露出一个小角尖时，回正 22.当看到库角距离后视镜下沿一指到两指之间的时候，左打满（这是左右两种倒库的区别所在） 23.此时看右后视镜，右边库角完全露出后回正 24.微调 25.右侧库角距离后视镜下边缘一指时，停 26.挂一档，准备出去 27.车盖左前角碰到黄色实线，右打满 28.等车正回正 29.左前角与下面虚线碰上，左打满 30.开到出发点，差不多那个位置就行 31.挂空挡，拉手刹，解安全带，不熄火 32.此时电脑显示成绩，80分就算通过</p>
   </div>
-  <footer class="entry-footer"><span title='2025-10-23 22:02:20 +0800 CST'>October 23, 2025</span>&nbsp;·&nbsp;<span>1 min</span>&nbsp;·&nbsp;<span>Jisi Hu</span></footer>
+  <footer class="entry-footer"><span title='2025-10-23 22:02:57 +0800 CST'>October 23, 2025</span>&nbsp;·&nbsp;<span>1 min</span>&nbsp;·&nbsp;<span>Jisi Hu</span></footer>
   <a class="entry-link" aria-label="post link to 倒车入库的动作要领" href="https://jisi-notes.pages.dev/posts/%E5%80%92%E8%BD%A6%E5%85%A5%E5%BA%93%E7%9A%84%E5%8A%A8%E4%BD%9C%E8%A6%81%E9%A2%86/"></a>
 </article>
 

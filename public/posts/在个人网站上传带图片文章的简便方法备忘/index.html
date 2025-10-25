@@ -1,0 +1,515 @@
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>在个人网站上传带图片文章的简便方法（备忘） | My Notes</title>
+<meta name="keywords" content="">
+<meta name="description" content="在个人网站上传带图片文章的简便方法（备忘）
+1.先把markdown文章放在桌面，里面的图片正确引用
+2.在桌面创建文档HugoImageTransfer.ps1
+3.把以下代码粘贴在里面
+&lt;#
+Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径
+#&gt;
+
+# -------------------------- 你需要改的参数（只改这3行！）--------------------------
+$originalMdPath = &#34;C:\Users\你的用户名\Desktop\原文章.md&#34;  # 你的原Markdown文件路径（比如桌面的“原文章.md”）
+$hugoPostTitle = &#34;2025-10-25-my-new-post&#34;  # 新建的Hugo文章文件名（不用加.md，会自动加）
+$hugoProjectPath = &#34;D:\personnal_blog\paper-notes&#34;  # 你的Hugo项目根目录（之前的paper-notes）
+# --------------------------------------------------------------------------------
+
+# 1. 新建Hugo文章
+$hugoPostPath = Join-Path $hugoProjectPath &#34;content\posts\$hugoPostTitle.md&#34;
+hugo new &#34;posts\$hugoPostTitle.md&#34; --source $hugoProjectPath | Out-Null
+Write-Host &#34;✅ 已新建Hugo文章：$hugoPostPath&#34;
+
+# 2. 确保static/images文件夹存在
+$imageSaveDir = Join-Path $hugoProjectPath &#34;static\images&#34;
+if (-not (Test-Path $imageSaveDir)) {
+    New-Item -ItemType Directory -Path $imageSaveDir | Out-Null
+    Write-Host &#34;✅ 已创建图片保存目录：$imageSaveDir&#34;
+}
+
+# 3. 读取原Markdown内容
+$mdContent = Get-Content -Path $originalMdPath -Raw
+Write-Host &#34;✅ 已读取原Markdown文件&#34;
+
+# 4. 处理Base64图片（剪切板截图常见形式）
+$base64Pattern = &#39;!\[(.*?)\]\(data:image/(png|jpg|jpeg);base64,(.*?)\)&#39;
+$mdContent = [regex]::Replace($mdContent, $base64Pattern, {
+    param($match)
+    $imgDesc = $match.Groups[1].Value
+    $imgExt = $match.Groups[2].Value
+    $base64Data = $match.Groups[3].Value
+
+    # 生成唯一图片名（时间戳&#43;随机数，避免重复）
+    $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34;
+    $imgSavePath = Join-Path $imageSaveDir $imgName
+
+    # Base64解码并保存为图片文件
+    $base64Bytes = [Convert]::FromBase64String($base64Data)
+    [IO.File]::WriteAllBytes($imgSavePath, $base64Bytes)
+    Write-Host &#34;✅ 已保存Base64图片：$imgName&#34;
+
+    # 返回新的引用路径（Hugo绝对路径）
+    return &#34;![$imgDesc](/images/$imgName)&#34;
+}, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+
+# 5. 处理本地临时路径图片（如C:\Temp\XXX.png）
+$localImgPattern = &#39;!\[(.*?)\]\((C:\\Users\\.*?\.(png|jpg|jpeg|gif))\)&#39;
+$mdContent = [regex]::Replace($mdContent, $localImgPattern, {
+    param($match)
+    $imgDesc = $match.Groups[1].Value
+    $localImgPath = $match.Groups[2].Value
+    $imgExt = $match.Groups[3].Value
+
+    # 生成唯一图片名
+    $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34;
+    $imgSavePath = Join-Path $imageSaveDir $imgName
+
+    # 复制本地图片到static/images
+    Copy-Item -Path $localImgPath -Destination $imgSavePath -Force
+    Write-Host &#34;✅ 已复制本地图片：$imgName&#34;
+
+    # 返回新的引用路径
+    return &#34;![$imgDesc](/images/$imgName)&#34;
+}, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+
+# 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容）
+$frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern &#39;---[\s\S]*?---&#39; | ForEach-Object { $_.Matches.Value }
+$finalContent = &#34;$frontMatter`n`n$mdContent&#34;
+Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8
+Write-Host &#34;`n🎉 全部完成！Hugo文章路径：$hugoPostPath&#34;
+可以看到只用改三行代码">
+<meta name="author" content="Jisi Hu">
+<link rel="canonical" href="https://jisi-notes.pages.dev/posts/%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E5%B8%A6%E5%9B%BE%E7%89%87%E6%96%87%E7%AB%A0%E7%9A%84%E7%AE%80%E4%BE%BF%E6%96%B9%E6%B3%95%E5%A4%87%E5%BF%98/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.a482bf00fa5c046040ef7973ad5fdf5657890cacb596c93f1382f664ca542074.css" integrity="sha256-pIK/APpcBGBA73lzrV/fVleJDKy1lsk/E4L2ZMpUIHQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://jisi-notes.pages.dev/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://jisi-notes.pages.dev/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://jisi-notes.pages.dev/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://jisi-notes.pages.dev/apple-touch-icon.png">
+<link rel="mask-icon" href="https://jisi-notes.pages.dev/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://jisi-notes.pages.dev/posts/%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E5%B8%A6%E5%9B%BE%E7%89%87%E6%96%87%E7%AB%A0%E7%9A%84%E7%AE%80%E4%BE%BF%E6%96%B9%E6%B3%95%E5%A4%87%E5%BF%98/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://jisi-notes.pages.dev/posts/%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E5%B8%A6%E5%9B%BE%E7%89%87%E6%96%87%E7%AB%A0%E7%9A%84%E7%AE%80%E4%BE%BF%E6%96%B9%E6%B3%95%E5%A4%87%E5%BF%98/">
+  <meta property="og:site_name" content="My Notes">
+  <meta property="og:title" content="在个人网站上传带图片文章的简便方法（备忘）">
+  <meta property="og:description" content="在个人网站上传带图片文章的简便方法（备忘） 1.先把markdown文章放在桌面，里面的图片正确引用 2.在桌面创建文档HugoImageTransfer.ps1 3.把以下代码粘贴在里面 &lt;# Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径 #&gt; # -------------------------- 你需要改的参数（只改这3行！）-------------------------- $originalMdPath = &#34;C:\Users\你的用户名\Desktop\原文章.md&#34; # 你的原Markdown文件路径（比如桌面的“原文章.md”） $hugoPostTitle = &#34;2025-10-25-my-new-post&#34; # 新建的Hugo文章文件名（不用加.md，会自动加） $hugoProjectPath = &#34;D:\personnal_blog\paper-notes&#34; # 你的Hugo项目根目录（之前的paper-notes） # -------------------------------------------------------------------------------- # 1. 新建Hugo文章 $hugoPostPath = Join-Path $hugoProjectPath &#34;content\posts\$hugoPostTitle.md&#34; hugo new &#34;posts\$hugoPostTitle.md&#34; --source $hugoProjectPath | Out-Null Write-Host &#34;✅ 已新建Hugo文章：$hugoPostPath&#34; # 2. 确保static/images文件夹存在 $imageSaveDir = Join-Path $hugoProjectPath &#34;static\images&#34; if (-not (Test-Path $imageSaveDir)) { New-Item -ItemType Directory -Path $imageSaveDir | Out-Null Write-Host &#34;✅ 已创建图片保存目录：$imageSaveDir&#34; } # 3. 读取原Markdown内容 $mdContent = Get-Content -Path $originalMdPath -Raw Write-Host &#34;✅ 已读取原Markdown文件&#34; # 4. 处理Base64图片（剪切板截图常见形式） $base64Pattern = &#39;!\[(.*?)\]\(data:image/(png|jpg|jpeg);base64,(.*?)\)&#39; $mdContent = [regex]::Replace($mdContent, $base64Pattern, { param($match) $imgDesc = $match.Groups[1].Value $imgExt = $match.Groups[2].Value $base64Data = $match.Groups[3].Value # 生成唯一图片名（时间戳&#43;随机数，避免重复） $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34; $imgSavePath = Join-Path $imageSaveDir $imgName # Base64解码并保存为图片文件 $base64Bytes = [Convert]::FromBase64String($base64Data) [IO.File]::WriteAllBytes($imgSavePath, $base64Bytes) Write-Host &#34;✅ 已保存Base64图片：$imgName&#34; # 返回新的引用路径（Hugo绝对路径） return &#34;![$imgDesc](/images/$imgName)&#34; }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 5. 处理本地临时路径图片（如C:\Temp\XXX.png） $localImgPattern = &#39;!\[(.*?)\]\((C:\\Users\\.*?\.(png|jpg|jpeg|gif))\)&#39; $mdContent = [regex]::Replace($mdContent, $localImgPattern, { param($match) $imgDesc = $match.Groups[1].Value $localImgPath = $match.Groups[2].Value $imgExt = $match.Groups[3].Value # 生成唯一图片名 $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34; $imgSavePath = Join-Path $imageSaveDir $imgName # 复制本地图片到static/images Copy-Item -Path $localImgPath -Destination $imgSavePath -Force Write-Host &#34;✅ 已复制本地图片：$imgName&#34; # 返回新的引用路径 return &#34;![$imgDesc](/images/$imgName)&#34; }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容） $frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern &#39;---[\s\S]*?---&#39; | ForEach-Object { $_.Matches.Value } $finalContent = &#34;$frontMatter`n`n$mdContent&#34; Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8 Write-Host &#34;`n🎉 全部完成！Hugo文章路径：$hugoPostPath&#34; 可以看到只用改三行代码">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-10-25T17:47:13+08:00">
+    <meta property="article:modified_time" content="2025-10-25T17:47:13+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在个人网站上传带图片文章的简便方法（备忘）">
+<meta name="twitter:description" content="在个人网站上传带图片文章的简便方法（备忘）
+1.先把markdown文章放在桌面，里面的图片正确引用
+2.在桌面创建文档HugoImageTransfer.ps1
+3.把以下代码粘贴在里面
+&lt;#
+Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径
+#&gt;
+
+# -------------------------- 你需要改的参数（只改这3行！）--------------------------
+$originalMdPath = &#34;C:\Users\你的用户名\Desktop\原文章.md&#34;  # 你的原Markdown文件路径（比如桌面的“原文章.md”）
+$hugoPostTitle = &#34;2025-10-25-my-new-post&#34;  # 新建的Hugo文章文件名（不用加.md，会自动加）
+$hugoProjectPath = &#34;D:\personnal_blog\paper-notes&#34;  # 你的Hugo项目根目录（之前的paper-notes）
+# --------------------------------------------------------------------------------
+
+# 1. 新建Hugo文章
+$hugoPostPath = Join-Path $hugoProjectPath &#34;content\posts\$hugoPostTitle.md&#34;
+hugo new &#34;posts\$hugoPostTitle.md&#34; --source $hugoProjectPath | Out-Null
+Write-Host &#34;✅ 已新建Hugo文章：$hugoPostPath&#34;
+
+# 2. 确保static/images文件夹存在
+$imageSaveDir = Join-Path $hugoProjectPath &#34;static\images&#34;
+if (-not (Test-Path $imageSaveDir)) {
+    New-Item -ItemType Directory -Path $imageSaveDir | Out-Null
+    Write-Host &#34;✅ 已创建图片保存目录：$imageSaveDir&#34;
+}
+
+# 3. 读取原Markdown内容
+$mdContent = Get-Content -Path $originalMdPath -Raw
+Write-Host &#34;✅ 已读取原Markdown文件&#34;
+
+# 4. 处理Base64图片（剪切板截图常见形式）
+$base64Pattern = &#39;!\[(.*?)\]\(data:image/(png|jpg|jpeg);base64,(.*?)\)&#39;
+$mdContent = [regex]::Replace($mdContent, $base64Pattern, {
+    param($match)
+    $imgDesc = $match.Groups[1].Value
+    $imgExt = $match.Groups[2].Value
+    $base64Data = $match.Groups[3].Value
+
+    # 生成唯一图片名（时间戳&#43;随机数，避免重复）
+    $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34;
+    $imgSavePath = Join-Path $imageSaveDir $imgName
+
+    # Base64解码并保存为图片文件
+    $base64Bytes = [Convert]::FromBase64String($base64Data)
+    [IO.File]::WriteAllBytes($imgSavePath, $base64Bytes)
+    Write-Host &#34;✅ 已保存Base64图片：$imgName&#34;
+
+    # 返回新的引用路径（Hugo绝对路径）
+    return &#34;![$imgDesc](/images/$imgName)&#34;
+}, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+
+# 5. 处理本地临时路径图片（如C:\Temp\XXX.png）
+$localImgPattern = &#39;!\[(.*?)\]\((C:\\Users\\.*?\.(png|jpg|jpeg|gif))\)&#39;
+$mdContent = [regex]::Replace($mdContent, $localImgPattern, {
+    param($match)
+    $imgDesc = $match.Groups[1].Value
+    $localImgPath = $match.Groups[2].Value
+    $imgExt = $match.Groups[3].Value
+
+    # 生成唯一图片名
+    $imgName = &#34;img_$(Get-Date -Format &#39;yyyyMMddHHmmss&#39;)_$(Get-Random -Max 1000).$imgExt&#34;
+    $imgSavePath = Join-Path $imageSaveDir $imgName
+
+    # 复制本地图片到static/images
+    Copy-Item -Path $localImgPath -Destination $imgSavePath -Force
+    Write-Host &#34;✅ 已复制本地图片：$imgName&#34;
+
+    # 返回新的引用路径
+    return &#34;![$imgDesc](/images/$imgName)&#34;
+}, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+
+# 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容）
+$frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern &#39;---[\s\S]*?---&#39; | ForEach-Object { $_.Matches.Value }
+$finalContent = &#34;$frontMatter`n`n$mdContent&#34;
+Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8
+Write-Host &#34;`n🎉 全部完成！Hugo文章路径：$hugoPostPath&#34;
+可以看到只用改三行代码">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://jisi-notes.pages.dev/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "在个人网站上传带图片文章的简便方法（备忘）",
+      "item": "https://jisi-notes.pages.dev/posts/%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E5%B8%A6%E5%9B%BE%E7%89%87%E6%96%87%E7%AB%A0%E7%9A%84%E7%AE%80%E4%BE%BF%E6%96%B9%E6%B3%95%E5%A4%87%E5%BF%98/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "在个人网站上传带图片文章的简便方法（备忘）",
+  "name": "在个人网站上传带图片文章的简便方法（备忘）",
+  "description": "在个人网站上传带图片文章的简便方法（备忘） 1.先把markdown文章放在桌面，里面的图片正确引用 2.在桌面创建文档HugoImageTransfer.ps1 3.把以下代码粘贴在里面 \u0026lt;# Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径 #\u0026gt; # -------------------------- 你需要改的参数（只改这3行！）-------------------------- $originalMdPath = \u0026#34;C:\\Users\\你的用户名\\Desktop\\原文章.md\u0026#34; # 你的原Markdown文件路径（比如桌面的“原文章.md”） $hugoPostTitle = \u0026#34;2025-10-25-my-new-post\u0026#34; # 新建的Hugo文章文件名（不用加.md，会自动加） $hugoProjectPath = \u0026#34;D:\\personnal_blog\\paper-notes\u0026#34; # 你的Hugo项目根目录（之前的paper-notes） # -------------------------------------------------------------------------------- # 1. 新建Hugo文章 $hugoPostPath = Join-Path $hugoProjectPath \u0026#34;content\\posts\\$hugoPostTitle.md\u0026#34; hugo new \u0026#34;posts\\$hugoPostTitle.md\u0026#34; --source $hugoProjectPath | Out-Null Write-Host \u0026#34;✅ 已新建Hugo文章：$hugoPostPath\u0026#34; # 2. 确保static/images文件夹存在 $imageSaveDir = Join-Path $hugoProjectPath \u0026#34;static\\images\u0026#34; if (-not (Test-Path $imageSaveDir)) { New-Item -ItemType Directory -Path $imageSaveDir | Out-Null Write-Host \u0026#34;✅ 已创建图片保存目录：$imageSaveDir\u0026#34; } # 3. 读取原Markdown内容 $mdContent = Get-Content -Path $originalMdPath -Raw Write-Host \u0026#34;✅ 已读取原Markdown文件\u0026#34; # 4. 处理Base64图片（剪切板截图常见形式） $base64Pattern = \u0026#39;!\\[(.*?)\\]\\(data:image/(png|jpg|jpeg);base64,(.*?)\\)\u0026#39; $mdContent = [regex]::Replace($mdContent, $base64Pattern, { param($match) $imgDesc = $match.Groups[1].Value $imgExt = $match.Groups[2].Value $base64Data = $match.Groups[3].Value # 生成唯一图片名（时间戳+随机数，避免重复） $imgName = \u0026#34;img_$(Get-Date -Format \u0026#39;yyyyMMddHHmmss\u0026#39;)_$(Get-Random -Max 1000).$imgExt\u0026#34; $imgSavePath = Join-Path $imageSaveDir $imgName # Base64解码并保存为图片文件 $base64Bytes = [Convert]::FromBase64String($base64Data) [IO.File]::WriteAllBytes($imgSavePath, $base64Bytes) Write-Host \u0026#34;✅ 已保存Base64图片：$imgName\u0026#34; # 返回新的引用路径（Hugo绝对路径） return \u0026#34;![$imgDesc](/images/$imgName)\u0026#34; }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 5. 处理本地临时路径图片（如C:\\Temp\\XXX.png） $localImgPattern = \u0026#39;!\\[(.*?)\\]\\((C:\\\\Users\\\\.*?\\.(png|jpg|jpeg|gif))\\)\u0026#39; $mdContent = [regex]::Replace($mdContent, $localImgPattern, { param($match) $imgDesc = $match.Groups[1].Value $localImgPath = $match.Groups[2].Value $imgExt = $match.Groups[3].Value # 生成唯一图片名 $imgName = \u0026#34;img_$(Get-Date -Format \u0026#39;yyyyMMddHHmmss\u0026#39;)_$(Get-Random -Max 1000).$imgExt\u0026#34; $imgSavePath = Join-Path $imageSaveDir $imgName # 复制本地图片到static/images Copy-Item -Path $localImgPath -Destination $imgSavePath -Force Write-Host \u0026#34;✅ 已复制本地图片：$imgName\u0026#34; # 返回新的引用路径 return \u0026#34;![$imgDesc](/images/$imgName)\u0026#34; }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容） $frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern \u0026#39;---[\\s\\S]*?---\u0026#39; | ForEach-Object { $_.Matches.Value } $finalContent = \u0026#34;$frontMatter`n`n$mdContent\u0026#34; Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8 Write-Host \u0026#34;`n🎉 全部完成！Hugo文章路径：$hugoPostPath\u0026#34; 可以看到只用改三行代码\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "在个人网站上传带图片文章的简便方法（备忘） 1.先把markdown文章放在桌面，里面的图片正确引用 2.在桌面创建文档HugoImageTransfer.ps1 3.把以下代码粘贴在里面 \u003c# Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径 #\u003e # -------------------------- 你需要改的参数（只改这3行！）-------------------------- $originalMdPath = \"C:\\Users\\你的用户名\\Desktop\\原文章.md\" # 你的原Markdown文件路径（比如桌面的“原文章.md”） $hugoPostTitle = \"2025-10-25-my-new-post\" # 新建的Hugo文章文件名（不用加.md，会自动加） $hugoProjectPath = \"D:\\personnal_blog\\paper-notes\" # 你的Hugo项目根目录（之前的paper-notes） # -------------------------------------------------------------------------------- # 1. 新建Hugo文章 $hugoPostPath = Join-Path $hugoProjectPath \"content\\posts\\$hugoPostTitle.md\" hugo new \"posts\\$hugoPostTitle.md\" --source $hugoProjectPath | Out-Null Write-Host \"✅ 已新建Hugo文章：$hugoPostPath\" # 2. 确保static/images文件夹存在 $imageSaveDir = Join-Path $hugoProjectPath \"static\\images\" if (-not (Test-Path $imageSaveDir)) { New-Item -ItemType Directory -Path $imageSaveDir | Out-Null Write-Host \"✅ 已创建图片保存目录：$imageSaveDir\" } # 3. 读取原Markdown内容 $mdContent = Get-Content -Path $originalMdPath -Raw Write-Host \"✅ 已读取原Markdown文件\" # 4. 处理Base64图片（剪切板截图常见形式） $base64Pattern = '!\\[(.*?)\\]\\(data:image/(png|jpg|jpeg);base64,(.*?)\\)' $mdContent = [regex]::Replace($mdContent, $base64Pattern, { param($match) $imgDesc = $match.Groups[1].Value $imgExt = $match.Groups[2].Value $base64Data = $match.Groups[3].Value # 生成唯一图片名（时间戳+随机数，避免重复） $imgName = \"img_$(Get-Date -Format 'yyyyMMddHHmmss')_$(Get-Random -Max 1000).$imgExt\" $imgSavePath = Join-Path $imageSaveDir $imgName # Base64解码并保存为图片文件 $base64Bytes = [Convert]::FromBase64String($base64Data) [IO.File]::WriteAllBytes($imgSavePath, $base64Bytes) Write-Host \"✅ 已保存Base64图片：$imgName\" # 返回新的引用路径（Hugo绝对路径） return \"![$imgDesc](/images/$imgName)\" }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 5. 处理本地临时路径图片（如C:\\Temp\\XXX.png） $localImgPattern = '!\\[(.*?)\\]\\((C:\\\\Users\\\\.*?\\.(png|jpg|jpeg|gif))\\)' $mdContent = [regex]::Replace($mdContent, $localImgPattern, { param($match) $imgDesc = $match.Groups[1].Value $localImgPath = $match.Groups[2].Value $imgExt = $match.Groups[3].Value # 生成唯一图片名 $imgName = \"img_$(Get-Date -Format 'yyyyMMddHHmmss')_$(Get-Random -Max 1000).$imgExt\" $imgSavePath = Join-Path $imageSaveDir $imgName # 复制本地图片到static/images Copy-Item -Path $localImgPath -Destination $imgSavePath -Force Write-Host \"✅ 已复制本地图片：$imgName\" # 返回新的引用路径 return \"![$imgDesc](/images/$imgName)\" }, [System.Text.RegularExpressions.RegexOptions]::Singleline) # 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容） $frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern '---[\\s\\S]*?---' | ForEach-Object { $_.Matches.Value } $finalContent = \"$frontMatter`n`n$mdContent\" Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8 Write-Host \"`n🎉 全部完成！Hugo文章路径：$hugoPostPath\" 可以看到只用改三行代码\n$originalMdPath = \"C:\\Users\\你的用户名\\Desktop\\原文章.md\" # 你的原Markdown文件路径（比如桌面的“原文章.md”） $hugoPostTitle = \"2025-10-25-my-new-post\" # 新建的Hugo文章文件名（不用加.md，会自动加） $hugoProjectPath = \"D:\\personnal_blog\\paper-notes\" # 你的Hugo项目根目录（之前的paper-notes） 第一行代码直接选中要上传的markdown文章Ctrl+shift+C，再Ctrl+V\n第二行填写文章标题，一般都和原来的文章题目一样\n第三行正常情况下不用改\n4.打开powershell cd d: cd 桌面 先进入桌面文件夹\n再执行文件\n.\\HugoImageTransfer.ps1 看到类似输出就稳了\n✅ 已新建Hugo文章：D:\\personnal_blog\\paper-notes\\content\\posts\\2025-10-25-math-notes.md ✅ 已读取原Markdown文件 ✅ 已保存Base64图片：img_20251025153000_123.png ✅ 已复制本地图片：img_20251025153005_456.png 🎉 全部完成！Hugo文章路径：D:\\personnal_blog\\paper-notes\\content\\posts\\2025-10-25-math-notes.md 5.预览或者上传 ",
+  "wordCount" : "256",
+  "inLanguage": "en",
+  "datePublished": "2025-10-25T17:47:13+08:00",
+  "dateModified": "2025-10-25T17:47:13+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Jisi Hu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://jisi-notes.pages.dev/posts/%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E4%B8%8A%E4%BC%A0%E5%B8%A6%E5%9B%BE%E7%89%87%E6%96%87%E7%AB%A0%E7%9A%84%E7%AE%80%E4%BE%BF%E6%96%B9%E6%B3%95%E5%A4%87%E5%BF%98/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My Notes",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://jisi-notes.pages.dev/favicon.ico"
+    }
+  }
+}
+</script>
+<body>
+    
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://jisi-notes.pages.dev/" accesskey="h" title="My Notes (Alt + H)">My Notes</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+
+    <main class="main">
+        
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      在个人网站上传带图片文章的简便方法（备忘）
+    </h1>
+    <div class="post-meta"><span title='2025-10-25 17:47:13 +0800 CST'>October 25, 2025</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Jisi Hu</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="在个人网站上传带图片文章的简便方法备忘">在个人网站上传带图片文章的简便方法（备忘）<a hidden class="anchor" aria-hidden="true" href="#在个人网站上传带图片文章的简便方法备忘">#</a></h1>
+<h2 id="1先把markdown文章放在桌面里面的图片正确引用">1.先把markdown文章放在桌面，里面的图片正确引用<a hidden class="anchor" aria-hidden="true" href="#1先把markdown文章放在桌面里面的图片正确引用">#</a></h2>
+<h2 id="2在桌面创建文档hugoimagetransferps1">2.在桌面创建文档HugoImageTransfer.ps1<a hidden class="anchor" aria-hidden="true" href="#2在桌面创建文档hugoimagetransferps1">#</a></h2>
+<h2 id="3把以下代码粘贴在里面">3.把以下代码粘贴在里面<a hidden class="anchor" aria-hidden="true" href="#3把以下代码粘贴在里面">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#75715e">&lt;#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Hugo 图片批量迁移脚本：提取原Markdown图片→保存到static/images→替换引用路径
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -------------------------- 你需要改的参数（只改这3行！）--------------------------</span>
+</span></span><span style="display:flex;"><span>$originalMdPath = <span style="color:#e6db74">&#34;C:\Users\你的用户名\Desktop\原文章.md&#34;</span>  <span style="color:#75715e"># 你的原Markdown文件路径（比如桌面的“原文章.md”）</span>
+</span></span><span style="display:flex;"><span>$hugoPostTitle = <span style="color:#e6db74">&#34;2025-10-25-my-new-post&#34;</span>  <span style="color:#75715e"># 新建的Hugo文章文件名（不用加.md，会自动加）</span>
+</span></span><span style="display:flex;"><span>$hugoProjectPath = <span style="color:#e6db74">&#34;D:\personnal_blog\paper-notes&#34;</span>  <span style="color:#75715e"># 你的Hugo项目根目录（之前的paper-notes）</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --------------------------------------------------------------------------------</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 1. 新建Hugo文章</span>
+</span></span><span style="display:flex;"><span>$hugoPostPath = Join-Path $hugoProjectPath <span style="color:#e6db74">&#34;content\posts\</span>$hugoPostTitle<span style="color:#e6db74">.md&#34;</span>
+</span></span><span style="display:flex;"><span>hugo new <span style="color:#e6db74">&#34;posts\</span>$hugoPostTitle<span style="color:#e6db74">.md&#34;</span> --source $hugoProjectPath | Out-Null
+</span></span><span style="display:flex;"><span>Write-Host <span style="color:#e6db74">&#34;✅ 已新建Hugo文章：</span>$hugoPostPath<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2. 确保static/images文件夹存在</span>
+</span></span><span style="display:flex;"><span>$imageSaveDir = Join-Path $hugoProjectPath <span style="color:#e6db74">&#34;static\images&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#f92672">-not</span> (Test-Path $imageSaveDir)) {
+</span></span><span style="display:flex;"><span>    New-Item -ItemType Directory -Path $imageSaveDir | Out-Null
+</span></span><span style="display:flex;"><span>    Write-Host <span style="color:#e6db74">&#34;✅ 已创建图片保存目录：</span>$imageSaveDir<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 3. 读取原Markdown内容</span>
+</span></span><span style="display:flex;"><span>$mdContent = Get-Content -Path $originalMdPath -Raw
+</span></span><span style="display:flex;"><span>Write-Host <span style="color:#e6db74">&#34;✅ 已读取原Markdown文件&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 4. 处理Base64图片（剪切板截图常见形式）</span>
+</span></span><span style="display:flex;"><span>$base64Pattern = <span style="color:#e6db74">&#39;!\[(.*?)\]\(data:image/(png|jpg|jpeg);base64,(.*?)\)&#39;</span>
+</span></span><span style="display:flex;"><span>$mdContent = [<span style="color:#66d9ef">regex</span>]::Replace($mdContent, $base64Pattern, {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">param</span>($match)
+</span></span><span style="display:flex;"><span>    $imgDesc = $match.Groups[<span style="color:#ae81ff">1</span>].Value
+</span></span><span style="display:flex;"><span>    $imgExt = $match.Groups[<span style="color:#ae81ff">2</span>].Value
+</span></span><span style="display:flex;"><span>    $base64Data = $match.Groups[<span style="color:#ae81ff">3</span>].Value
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 生成唯一图片名（时间戳+随机数，避免重复）</span>
+</span></span><span style="display:flex;"><span>    $imgName = <span style="color:#e6db74">&#34;img_</span>$(Get-Date -Format <span style="color:#e6db74">&#39;yyyyMMddHHmmss&#39;</span>)<span style="color:#e6db74">_</span>$(Get-Random -Max <span style="color:#ae81ff">1000</span>)<span style="color:#e6db74">.</span>$imgExt<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    $imgSavePath = Join-Path $imageSaveDir $imgName
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Base64解码并保存为图片文件</span>
+</span></span><span style="display:flex;"><span>    $base64Bytes = [<span style="color:#66d9ef">Convert</span>]::FromBase64String($base64Data)
+</span></span><span style="display:flex;"><span>    [<span style="color:#66d9ef">IO.File</span>]::WriteAllBytes($imgSavePath, $base64Bytes)
+</span></span><span style="display:flex;"><span>    Write-Host <span style="color:#e6db74">&#34;✅ 已保存Base64图片：</span>$imgName<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 返回新的引用路径（Hugo绝对路径）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;![</span>$imgDesc<span style="color:#e6db74">](/images/</span>$imgName<span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>}, [<span style="color:#66d9ef">System.Text.RegularExpressions.RegexOptions</span>]::Singleline)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5. 处理本地临时路径图片（如C:\Temp\XXX.png）</span>
+</span></span><span style="display:flex;"><span>$localImgPattern = <span style="color:#e6db74">&#39;!\[(.*?)\]\((C:\\Users\\.*?\.(png|jpg|jpeg|gif))\)&#39;</span>
+</span></span><span style="display:flex;"><span>$mdContent = [<span style="color:#66d9ef">regex</span>]::Replace($mdContent, $localImgPattern, {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">param</span>($match)
+</span></span><span style="display:flex;"><span>    $imgDesc = $match.Groups[<span style="color:#ae81ff">1</span>].Value
+</span></span><span style="display:flex;"><span>    $localImgPath = $match.Groups[<span style="color:#ae81ff">2</span>].Value
+</span></span><span style="display:flex;"><span>    $imgExt = $match.Groups[<span style="color:#ae81ff">3</span>].Value
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 生成唯一图片名</span>
+</span></span><span style="display:flex;"><span>    $imgName = <span style="color:#e6db74">&#34;img_</span>$(Get-Date -Format <span style="color:#e6db74">&#39;yyyyMMddHHmmss&#39;</span>)<span style="color:#e6db74">_</span>$(Get-Random -Max <span style="color:#ae81ff">1000</span>)<span style="color:#e6db74">.</span>$imgExt<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    $imgSavePath = Join-Path $imageSaveDir $imgName
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 复制本地图片到static/images</span>
+</span></span><span style="display:flex;"><span>    Copy-Item -Path $localImgPath -Destination $imgSavePath -Force
+</span></span><span style="display:flex;"><span>    Write-Host <span style="color:#e6db74">&#34;✅ 已复制本地图片：</span>$imgName<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 返回新的引用路径</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;![</span>$imgDesc<span style="color:#e6db74">](/images/</span>$imgName<span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>}, [<span style="color:#66d9ef">System.Text.RegularExpressions.RegexOptions</span>]::Singleline)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 6. 把处理后的内容写入Hugo新文章（覆盖默认的Front Matter之后的内容）</span>
+</span></span><span style="display:flex;"><span>$frontMatter = Get-Content -Path $hugoPostPath -Raw | Select-String -Pattern <span style="color:#e6db74">&#39;---[\s\S]*?---&#39;</span> | ForEach-Object { $_.Matches.Value }
+</span></span><span style="display:flex;"><span>$finalContent = <span style="color:#e6db74">&#34;</span>$frontMatter<span style="color:#ae81ff">`n`n</span>$mdContent<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>Set-Content -Path $hugoPostPath -Value $finalContent -Encoding UTF8
+</span></span><span style="display:flex;"><span>Write-Host <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`n</span><span style="color:#e6db74">🎉 全部完成！Hugo文章路径：</span>$hugoPostPath<span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><p>可以看到只用改三行代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$originalMdPath = <span style="color:#e6db74">&#34;C:\Users\你的用户名\Desktop\原文章.md&#34;</span>  <span style="color:#75715e"># 你的原Markdown文件路径（比如桌面的“原文章.md”）</span>
+</span></span><span style="display:flex;"><span>$hugoPostTitle = <span style="color:#e6db74">&#34;2025-10-25-my-new-post&#34;</span>  <span style="color:#75715e"># 新建的Hugo文章文件名（不用加.md，会自动加）</span>
+</span></span><span style="display:flex;"><span>$hugoProjectPath = <span style="color:#e6db74">&#34;D:\personnal_blog\paper-notes&#34;</span>  <span style="color:#75715e"># 你的Hugo项目根目录（之前的paper-notes）</span>
+</span></span></code></pre></div><p>第一行代码直接选中要上传的markdown文章Ctrl+shift+C，再Ctrl+V</p>
+<p>第二行填写文章标题，一般都和原来的文章题目一样</p>
+<p>第三行正常情况下不用改</p>
+<h2 id="4打开powershell">4.打开powershell<a hidden class="anchor" aria-hidden="true" href="#4打开powershell">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>cd d:
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>cd 桌面
+</span></span></code></pre></div><p>先进入桌面文件夹</p>
+<p>再执行文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>.\HugoImageTransfer.ps1
+</span></span></code></pre></div><p>看到类似输出就稳了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">✅</span> 已新建Hugo文章<span style="color:#960050;background-color:#1e0010">：</span>D:\personnal_blog\paper-notes\content\posts\<span style="color:#ae81ff">2025</span>-<span style="color:#ae81ff">10</span>-<span style="color:#ae81ff">25</span>-math-notes.md
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">✅</span> 已读取原Markdown文件
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">✅</span> 已保存Base64图片<span style="color:#960050;background-color:#1e0010">：</span>img_20251025153000_123.png
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">✅</span> 已复制本地图片<span style="color:#960050;background-color:#1e0010">：</span>img_20251025153005_456.png
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">🎉</span> 全部完成<span style="color:#960050;background-color:#1e0010">！</span>Hugo文章路径<span style="color:#960050;background-color:#1e0010">：</span>D:\personnal_blog\paper-notes\content\posts\<span style="color:#ae81ff">2025</span>-<span style="color:#ae81ff">10</span>-<span style="color:#ae81ff">25</span>-math-notes.md
+</span></span></code></pre></div><h2 id="5预览或者上传">5.预览或者上传<a hidden class="anchor" aria-hidden="true" href="#5预览或者上传">#</a></h2>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://jisi-notes.pages.dev/">My Notes</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+    
+    
+    
+</body>
+</html>
